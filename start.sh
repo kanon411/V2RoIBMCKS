@@ -212,7 +212,7 @@ let PORT_RAND=($RANDOM)/12
 echo -e '\nEnter into the build environment ...'
 (echo 'apk add --update curl ca-certificates openssl'; \
     echo wget -O build.sh 'https://raw.githubusercontent.com/jogolor/V2RoIBMCKS/master/build.sh'; \
-    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$CLUSTER_NAME" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH") | kubectl exec -it build sh
+    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$CLUSTER_NAME" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH" "$KUBEVER") | kubectl exec -it build sh
 
 # 清除构建环境
 echo -e '\nClear the build environment ...'
