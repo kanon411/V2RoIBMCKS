@@ -15,6 +15,7 @@ DOMAIN=$11
 EMAIL=$12
 WEBSOCKET_PATH=$13
 SS_WEBSOCKET_PATH=$14
+KUBEVER=$15
 
 # 安装 IBM Cloud CLI
 echo -e '\nDownload IBM Cloud CLI ...'
@@ -37,7 +38,6 @@ ibmcloud ks init
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
-KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
