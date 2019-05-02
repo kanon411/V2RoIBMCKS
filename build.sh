@@ -4,7 +4,7 @@
 REGION=$1
 USERNAME=$2
 PASSWD=$3
-KUBEVER=$4
+CLUSTER_NAME=$4
 IP=$5
 SP=$6
 PORT_RAND=$7
@@ -37,6 +37,7 @@ ibmcloud ks init
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
+KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
@@ -45,7 +46,7 @@ echo
 
 # 将 IBM Cloud CLI 配置为运行 kubectl
 echo -e '\nConfigurate IBM Cloud CLI to run kubectl ...'
-$(ibmcloud ks cluster-config $(ibmcloud ks clusters -s | grep 'normal' | awk '{print $1}') --export -s)
+$(ibmcloud ks cluster-config $CLUSTER_NAME --export -s)
 echo -e '\nKubectl version:'
 echo
 kubectl version  --short
