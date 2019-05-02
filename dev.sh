@@ -8,11 +8,15 @@ function checkPara(){
     false
 }
 
-# 设定区域
-REGION=ng # Dallas, USA
-checkPara 'au' && REGION=au-syd # Sydney, Australia
-checkPara 'uk' && REGION=eu-gb # London, England
-checkPara 'de' && REGION=eu-de # Frankfurt, Germany
+# 设置 REGION
+REGION=ng # US South, North America
+checkPara 'au' && REGION=au-syd # AP South(Sydney, Australia), Asia Pacific
+checkPara 'de' && REGION=eu-de # EU Central(Deutschland), Europe
+checkPara 'uk' && REGION=eu-gb # UK South(Great Britain), Europe
+
+# 设置 CLUSTER_NAME
+echo -e -n '\n您打算用哪个集群？请原样输入集群名称并仔细核对：'
+read CLUSTER_NAME
 
 # 安装 IBM Cloud CLI
 echo -e '\nDownload IBM Cloud CLI ...'
@@ -70,7 +74,7 @@ ibmcloud ks init
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
-KUBEVER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
@@ -78,7 +82,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 echo
 
 # 显示 kubectl 版本，提示配置运行环境 
-KUBE_ENV=$(ibmcloud ks cluster-config $(ibmcloud ks clusters -s | grep 'normal' | awk '{print $1}') --export -s)
+KUBE_ENV=$(ibmcloud ks cluster-config $CLUSTER_NAME --export -s)
 $KUBE_ENV
 echo -e '\nKubectl version:'
 kubectl version  --short
