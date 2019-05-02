@@ -70,7 +70,7 @@ ibmcloud ks init
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
-KUBEVER='v'$(ibmcloud ks clusters -s --json | grep 'masterKubeVersion' | awk '{print $2}' | cut -d '"' -f2 | cut -d '_' -f1)
+KUBEVER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
