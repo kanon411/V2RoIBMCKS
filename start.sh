@@ -8,15 +8,19 @@ function checkPara(){
     false
 }
 
-# 设定区域
+# 设置 REGION
 REGION=ng # Dallas, USA
 checkPara 'au' && REGION=au-syd # Sydney, Australia
 checkPara 'uk' && REGION=eu-gb # London, England
 checkPara 'de' && REGION=eu-de # Frankfurt, Germany
 
-# 检查 BBR 参数
+# 设置 BBR
 BBR=false
 checkPara 'bbr' && BBR=true
+
+# 设置 CLUSTER_NAME
+echo -e -n '\n您打算用哪个集群？请原样输入集群名称并仔细核对：'
+read CLUSTER_NAME
 
 # 保留或生成 UUID、SS_PWD & WebSocket PATH
 echo -e '\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
@@ -140,7 +144,7 @@ ibmcloud ks init
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
-KUBEVER='v'$(ibmcloud ks clusters -s --json | grep 'masterKubeVersion' | awk '{print $2}' | cut -d '"' -f2 | cut -d '_' -f1)
+KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
