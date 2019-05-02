@@ -9,10 +9,10 @@ function checkPara(){
 }
 
 # 设置 REGION
-REGION=ng # Dallas, USA
-checkPara 'au' && REGION=au-syd # Sydney, Australia
-checkPara 'uk' && REGION=eu-gb # London, England
-checkPara 'de' && REGION=eu-de # Frankfurt, Germany
+REGION=ng # US South, North America
+checkPara 'au' && REGION=au-syd # AP South(Sydney, Australia), Asia Pacific
+checkPara 'de' && REGION=eu-de # EU Central(Deutschland), Europe
+checkPara 'uk' && REGION=eu-gb # UK South(Great Britain), Europe
 
 # 设置 BBR
 BBR=false
@@ -153,7 +153,7 @@ echo
 
 # 将 IBM Cloud CLI 配置为运行 kubectl
 echo -e '\nConfigurate IBM Cloud CLI to run kubectl ...'
-$(ibmcloud ks cluster-config $(ibmcloud ks clusters -s | grep 'normal' | awk '{print $1}') --export -s)
+$(ibmcloud ks cluster-config $CLUSTER_NAME --export -s)
 echo -e '\nKubectl version:'
 echo
 kubectl version  --short
@@ -212,7 +212,7 @@ let PORT_RAND=($RANDOM)/12
 echo -e '\nEnter into the build environment ...'
 (echo 'apk add --update curl ca-certificates openssl'; \
     echo wget -O build.sh 'https://raw.githubusercontent.com/jogolor/V2RoIBMCKS/master/build.sh'; \
-    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$KUBEVER" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH") | kubectl exec -it build sh
+    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$CLUSTER_NAME" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH") | kubectl exec -it build sh
 
 # 清除构建环境
 echo -e '\nClear the build environment ...'
