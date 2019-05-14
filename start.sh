@@ -9,10 +9,10 @@ function checkPara(){
 }
 
 # 设置 REGION
-REGION=ng # US South, North America
+REGION=us-south # US South(Dallas, USA), North America
 checkPara 'au' && REGION=au-syd # AP South(Sydney, Australia), Asia Pacific
-checkPara 'de' && REGION=eu-de # EU Central(Deutschland), Europe
-checkPara 'uk' && REGION=eu-gb # UK South(Great Britain), Europe
+checkPara 'de' && REGION=eu-de # EU Central(Frankfurt, Deutschland), Europe
+checkPara 'uk' && REGION=eu-gb # UK South(London, Great Britain), Europe
 
 # 设置 BBR
 BBR=false
@@ -91,7 +91,7 @@ fi
 
 # 安装 IBM Cloud CLI
 echo -e '\nDownload IBM Cloud CLI ...'
-curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64
+curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.cloud.ibm.com/download/bluemix-cli/latest/linux64
 echo -e '\nInstall IBM Cloud CLI ...'
 tar -zxf IBM_Cloud_CLI_amd64.tar.gz
 cd Bluemix_CLI
@@ -114,7 +114,7 @@ do
     read -s PASSWD
 done
 echo -e '\n'
-while ibmcloud login -a https://api.${REGION}.bluemix.net -u $USERNAME -p $PASSWD 2>&1 | grep -q "Credentials were rejected"
+while ibmcloud login -a https://cloud.ibm.com -r $REGION -u $USERNAME -p $PASSWD 2>&1 | grep -q "Credentials were rejected"
 do
     echo -e '\n用户名或密码错误，请核对后重新输入！'
     echo -e -n '\n请输入用户名：'
@@ -140,7 +140,11 @@ echo
 # 安装 IBM Cloud CLI 插件
 echo -e '\nInstall IBM Cloud CLI plugin ...'
 ibmcloud plugin install container-service -r Bluemix
+ibmcloud plugin install container-registry -r Bluemix
 ibmcloud ks init
+
+# 设置 IBMCR_DOMAIN
+IBMCR_DOMAIN=$(ibmcloud cr region | grep 'icr.io' | cut -d "'" -f4)
 
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
@@ -212,7 +216,7 @@ let PORT_RAND=($RANDOM)/12
 echo -e '\nEnter into the build environment ...'
 (echo 'apk add --update curl ca-certificates openssl'; \
     echo wget -O build.sh 'https://raw.githubusercontent.com/jogolor/V2RoIBMCKS/master/build.sh'; \
-    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$CLUSTER_NAME" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH" "$KUBEVER") | kubectl exec -it build sh
+    echo sh build.sh "$REGION" "$USERNAME" "$PASSWD" "$CLUSTER_NAME" "$IP" "$SP" "$PORT_RAND" "$UUID" "$SS_PWD" "$BBR" "$DOMAIN" "$EMAIL" "$WEBSOCKET_PATH" "$SS_WEBSOCKET_PATH" "$KUBEVER" "$IBMCR_DOMAIN") | kubectl exec -it build sh
 
 # 清除构建环境
 echo -e '\nClear the build environment ...'
