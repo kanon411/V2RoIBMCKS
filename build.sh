@@ -16,10 +16,11 @@ EMAIL=$12
 WEBSOCKET_PATH=$13
 SS_WEBSOCKET_PATH=$14
 KUBEVER=$15
+IBMCR_DOMAIN=$16
 
 # 安装 IBM Cloud CLI
 echo -e '\nDownload IBM Cloud CLI ...'
-curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64
+curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.cloud.ibm.com/download/bluemix-cli/latest/linux64
 echo -e '\nInstall IBM Cloud CLI ...'
 tar -zxf IBM_Cloud_CLI_amd64.tar.gz
 cd Bluemix_CLI
@@ -27,7 +28,7 @@ sh ./install_bluemix_cli
 ibmcloud config --usage-stats-collect false
 
 #登录到 IBM Cloud CLI
-ibmcloud  login -a https://api.${REGION}.bluemix.net -u $USERNAME -p $PASSWD
+ibmcloud  login -a https://cloud.ibm.com -r $REGION -u $USERNAME -p $PASSWD
 (echo 1; echo 1) | ibmcloud target --cf  #Target Cloud Foundry org/space.
 
 # 安装 IBM Cloud CLI 插件
@@ -97,7 +98,7 @@ CMD ["v2ray", "-config=/etc/v2ray/config.json"]
 _EOF_
 
 echo -e '\nBuild and push the container image of "V2Ray" ...'
-ibmcloud cr build -t registry.${REGION}.bluemix.net/$NS/v2ray .
+ibmcloud cr build -t ${IBMCR_DOMAIN}/${NS}/v2ray .
 
 # 创建容器映像 V2RAY 的部署文件
 echo -e '\nCreate the deployment file "v2ray.yaml" for the container image of "V2Ray" ...'
@@ -123,7 +124,7 @@ spec:
     spec:
       containers:
       - name: v2ray
-        image: registry.${REGION}.bluemix.net/${NS}/v2ray
+        image: ${IBMCR_DOMAIN}/${NS}/v2ray
         ports:
           - containerPort: $V2RAY_PORT
             protocol: TCP
@@ -155,7 +156,7 @@ sed -i "s/{UUID_PWD}/$SS_PWD/g" config.json
 sed -i "s/{WEBSOCKET_PATH}/$SS_WEBSOCKET_PATH/g" config.json
 
 echo -e '\nBuild and push the container image of "V2Ray-SS" ...'
-ibmcloud cr build -t registry.${REGION}.bluemix.net/$NS/v2ray-ss . # 复用容器映像 V2RAY 的 Dockerfile
+ibmcloud cr build -t ${IBMCR_DOMAIN}/${NS}/v2ray-ss . # 复用容器映像 V2RAY 的 Dockerfile
 
 # 创建容器映像 V2RAY-SS 的部署文件
 echo -e '\nCreate the deployment file "v2ray-ss.yaml" for the container image of "V2Ray-SS" ...'
@@ -181,7 +182,7 @@ spec:
     spec:
       containers:
       - name: v2ray-ss
-        image: registry.${REGION}.bluemix.net/${NS}/v2ray-ss
+        image: ${IBMCR_DOMAIN}/${NS}/v2ray-ss
         ports:
           - containerPort: $V2RAY_PORT
             protocol: TCP
@@ -260,7 +261,7 @@ CMD ["caddy", "-conf=/etc/caddy/Caddyfile", "-agree"]
 _EOF_
 
 echo -e '\nBuild and push the container image of "Caddy" ...'
-ibmcloud cr build -t registry.${REGION}.bluemix.net/$NS/caddy .
+ibmcloud cr build -t ${IBMCR_DOMAIN}/${NS}/caddy .
 
 # 创建容器映像 CADDY 的部署文件
 echo -e '\nCreate the deployment file "caddy.yaml" for the container image of "Caddy" ...'
@@ -286,7 +287,7 @@ spec:
     spec:
       containers:
       - name: caddy
-        image: registry.${REGION}.bluemix.net/${NS}/caddy
+        image: ${IBMCR_DOMAIN}/${NS}/caddy
         ports:
           - containerPort: $SP
             protocol: TCP
