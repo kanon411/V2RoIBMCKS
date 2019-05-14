@@ -9,10 +9,10 @@ function checkPara(){
 }
 
 # 设置 REGION
-REGION=ng # US South, North America
+REGION=us-south # US South(Dallas, USA), North America
 checkPara 'au' && REGION=au-syd # AP South(Sydney, Australia), Asia Pacific
-checkPara 'de' && REGION=eu-de # EU Central(Deutschland), Europe
-checkPara 'uk' && REGION=eu-gb # UK South(Great Britain), Europe
+checkPara 'de' && REGION=eu-de # EU Central(Frankfurt, Deutschland), Europe
+checkPara 'uk' && REGION=eu-gb # UK South(London, Great Britain), Europe
 
 # 设置 CLUSTER_NAME
 echo -e -n '\n您打算用哪个集群？请原样输入集群名称并仔细核对：'
@@ -43,7 +43,7 @@ do
     read -s PASSWD
 done
 echo -e '\n'
-while ibmcloud login -a https://api.${REGION}.bluemix.net -u $USERNAME -p $PASSWD 2>&1 | grep -q "Credentials were rejected"
+while ibmcloud login -a https://cloud.ibm.com -r $REGION -u $USERNAME -p $PASSWD 2>&1 | grep -q "Credentials were rejected"
 do
     echo -e '\n用户名或密码错误，请核对后重新输入！'
     echo -e -n '\n请输入用户名：'
