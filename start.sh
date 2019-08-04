@@ -91,11 +91,11 @@ fi
 
 # 安装 IBM Cloud CLI
 echo -e '\nDownload IBM Cloud CLI ...'
-curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.cloud.ibm.com/download/bluemix-cli/latest/linux64
+#curl -Lo IBM_Cloud_CLI_amd64.tar.gz https://clis.cloud.ibm.com/download/bluemix-cli/latest/linux64
 echo -e '\nInstall IBM Cloud CLI ...'
-tar -zxf IBM_Cloud_CLI_amd64.tar.gz
+#tar -zxf IBM_Cloud_CLI_amd64.tar.gz
 cd Bluemix_CLI
-sudo ./install_bluemix_cli
+#sudo ./install_bluemix_cli
 ibmcloud config --usage-stats-collect false
 
 #登录到 IBM Cloud CLI
@@ -139,8 +139,8 @@ echo
 
 # 安装 IBM Cloud CLI 插件
 echo -e '\nInstall IBM Cloud CLI plugin ...'
-ibmcloud plugin install container-service -r Bluemix
-ibmcloud plugin install container-registry -r Bluemix
+#ibmcloud plugin install container-service -r Bluemix
+#ibmcloud plugin install container-registry -r Bluemix
 ibmcloud ks init
 
 # 设置 IBMCR_DOMAIN
@@ -149,6 +149,7 @@ IBMCR_DOMAIN=$(ibmcloud cr region | grep 'icr.io' | cut -d "'" -f4)
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
 KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
+echo -e ${KUBEVER}
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
 chmod +x ./kubectl
