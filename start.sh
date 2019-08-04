@@ -149,11 +149,11 @@ IBMCR_DOMAIN=$(ibmcloud cr region | grep 'icr.io' | cut -d "'" -f4)
 # 安装 kubectl
 echo -e '\nDownload kubectl ...'
 KUBEVER='v'$(ibmcloud ks cluster-get $CLUSTER_NAME | grep 'Version' | awk '{print $2}' | cut -d '_' -f1)
-echo -e ${KUBEVER}
-curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
+#echo -e ${KUBEVER}
+#curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBEVER}/bin/linux/amd64/kubectl
 echo -e '\nInstall kubectl ...'
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
+#chmod +x ./kubectl
+#sudo mv ./kubectl /usr/local/bin/kubectl
 echo
 
 # 将 IBM Cloud CLI 配置为运行 kubectl
